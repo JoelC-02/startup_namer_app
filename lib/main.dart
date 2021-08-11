@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:english_words/english_words.dart';
-//import 'package:device_preview/device_preview.dart';
+import 'package:device_preview/device_preview.dart';
+import 'sizeconfig.dart';
 
-void main() => runApp(MyApp());
-    // DevicePreview(
-    //   builder: (context) => MyApp(),
-    // ),
-// );
+void main() => runApp(
+  DevicePreview(
+    enabled: !kReleaseMode,
+    builder: (context) => MyApp(),
+  ),
+);
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return MaterialApp(
       title: 'Startup Name Generator',
       theme: ThemeData(
-        primaryColor: Colors.white,
+        primaryColor: Colors.blue,
       ),
       home: RandomWords(),
-      // locale: DevicePreview.locale(context),
-      // builder: DevicePreview.appBuilder, 
+      locale: DevicePreview.locale(context),
+      builder: DevicePreview.appBuilder,
     );
   }
 }
@@ -33,13 +37,16 @@ class RandomWords extends StatefulWidget {
 class _RandomWordsState extends State<RandomWords> {
   final _suggestions = <WordPair>[];
   final _saved = <WordPair>{};
-  final _biggerFont = const TextStyle(fontSize: 18);
+  final _biggerFont = TextStyle(fontSize: SizeConfig.blockSizeHorizontal * 5);
 
   @override
   Widget build(BuildContext context) {
+    SizeConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Startup Name Generator'),
+        title: Text(
+          'Startup Name Generator',
+          style: _biggerFont),
         actions: [
           IconButton(icon: Icon(Icons.list), onPressed: _pushSaved),
         ],
@@ -50,7 +57,7 @@ class _RandomWordsState extends State<RandomWords> {
 
   Widget _buildSuggestions() {
     return ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(SizeConfig.blockSizeVertical * 3),
         // The itemBuilder callback is called once per suggested
         // word pairing, and places each suggestion into a ListTile
         // row. For even rows, the function adds a ListTile row for
@@ -124,7 +131,10 @@ class _RandomWordsState extends State<RandomWords> {
 
           return Scaffold(
             appBar: AppBar(
-              title: Text('Saved Suggestions'),
+              title: Text(
+                'Saved Suggestions',
+                style: _biggerFont
+              ),
             ),
             body: ListView(children: divided),
           );
